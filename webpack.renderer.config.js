@@ -1,16 +1,19 @@
 const rules = require('./webpack.rules');
-
-rules.push({
-  test: /\.css$/,
-  use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
-});
+const plugins = require('./webpack.plugins');
 
 module.exports = {
   // Put your normal webpack config below here
   module: {
-    rules,
+    rules: [
+      ...rules,
+      {
+        test: /\.css$/,
+        use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+      }
+    ],
   },
+  plugins,
   resolve: {
-    extensions: ['', '.js', '.jsx'],
-  }                                                                         
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css']
+  },
 };
