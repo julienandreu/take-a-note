@@ -1,3 +1,5 @@
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import React, { useEffect } from 'react';
 
 const App = () => {
@@ -12,8 +14,10 @@ const App = () => {
 
   return (
     <>
-      <h1>App Component</h1>
-      <button onClick={handlePing}>Ping</button>
+      <Typography variant="h1">App Component</Typography>
+      <Button variant="contained" onClick={handlePing}>
+        Ping
+      </Button>
     </>
   );
 };
