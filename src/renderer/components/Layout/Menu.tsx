@@ -10,7 +10,7 @@ import { state } from '../../store';
 export const Menu: FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
-  const { fileOpen, onFileOpenSucess, onFileOpenError } = useAppContext();
+  const { fileOpen, onFileOpenSucess, onFileOpenError, fileRead, onFileReadSucess, onFileReadError } = useAppContext();
   const {
     ping: { count = 0 },
   } = useSnapshot(state);
@@ -43,32 +43,8 @@ export const Menu: FC = () => {
     setAnchorEl(null);
   }, []);
 
-  const handleOpenFile = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const filelist = event?.target?.files;
-    if (!filelist) {
-      setAnchorEl(null);
-      return;
-    }
-
-    const file = filelist[0];
-    if (!file) {
-      setAnchorEl(null);
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      state.file.name = file.name;
-      state.file.path = file.path;
-      state.file.content = reader?.result?.toString() ?? '';
-      setAnchorEl(null);
-    };
-    reader.readAsText(file);
-  }, []);
-
-  const handleNativeOpen = useCallback(() => {
+  const handleOpen = useCallback(() => {
     fileOpen();
-    setAnchorEl(null);
   }, []);
 
   const handlePing = useCallback(() => {
@@ -77,10 +53,26 @@ export const Menu: FC = () => {
 
   useEffect(() => {
     onFileOpenSucess((filePaths) => {
-      console.log(filePaths);
+      const filePath = filePaths.find(Boolean);
+      if (!filePath) {
+        setAnchorEl(null);
+        return;
+      }
+
+      state.file.name = filePath;
+      fileRead(filePath);
     });
     onFileOpenError((error) => {
       console.error(error);
+      setAnchorEl(null);
+    });
+    onFileReadSucess((content) => {
+      state.file.content = content ?? '';
+      setAnchorEl(null);
+    });
+    onFileReadError((error) => {
+      console.error(error);
+      setAnchorEl(null);
     });
   }, []);
 
@@ -110,18 +102,7 @@ export const Menu: FC = () => {
         }}
       >
         <MenuItem onClick={handleNew}>New file</MenuItem>
-        <input
-          accept="text/*"
-          onChange={handleOpenFile}
-          style={{ display: 'none' }}
-          id="open-file"
-          type="file"
-          value={''}
-        />
-        <MenuItem component="label" htmlFor="open-file">
-          Open
-        </MenuItem>
-        <MenuItem onClick={handleNativeOpen}>Native open</MenuItem>
+        <MenuItem onClick={handleOpen}>Open</MenuItem>
         <MenuItem onClick={handleClose}>Save as...</MenuItem>
         <MenuItem onClick={handlePing}>
           Ping for the {pingCalls}

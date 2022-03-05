@@ -1,3 +1,4 @@
+import { readFileSync } from 'fs';
 import { IpcMain, ipcMain, IpcMainEvent, dialog } from 'electron';
 
 interface IpcMainEventListenerEvent<T> extends Omit<IpcMainEvent, 'reply'> {
@@ -51,5 +52,13 @@ export const attachMainEvents = () => {
       event.reply('file.open.error', error instanceof Error ? error : new Error(`${error}`));
     }
   });
-  mainRegistry.on('file.read', (event) => {});
+  mainRegistry.on('file.read', (event, path) => {
+    try {
+      const content = readFileSync(path);
+
+      event.reply('file.read.success', content.toString('utf8'));
+    } catch (error) {
+      event.reply('file.read.error', error instanceof Error ? error : new Error(`${error}`));
+    }
+  });
 };
