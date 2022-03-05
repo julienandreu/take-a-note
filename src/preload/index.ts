@@ -1,9 +1,14 @@
-import { AppContext } from './../interfaces/app-context.interface';
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge } from 'electron';
+import { rendererRegistry } from './renderer-registry';
 
-const appContext: AppContext = {
-  sendPing: () => ipcRenderer.send('ping'),
-  onPingReceive: (callback) => ipcRenderer.on('ping-reply', (event, arg) => callback(arg)),
+export const appContext = {
+  fileOpen: () => {
+    rendererRegistry.send('file.open');
+  },
+  onFileOpenSucess: (callback: (filePaths: string[]) => void) =>
+    rendererRegistry.on('file.open.success', (event, filePaths) => callback(filePaths)),
+  onFileOpenError: (callback: (error: Error) => void) =>
+    rendererRegistry.on('file.open.error', (event, error) => callback(error)),
 };
 
 contextBridge.exposeInMainWorld('appContext', appContext);

@@ -1,7 +1,7 @@
-import { AppContext } from './app-context.interface';
+import { appContext } from 'src/preload';
 
 declare global {
   interface Window {
-    appContext: AppContext;
+    appContext: typeof appContext;
   }
 }

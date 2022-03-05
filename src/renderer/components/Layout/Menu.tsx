@@ -10,7 +10,7 @@ import { state } from '../../store';
 export const Menu: FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
-  const { sendPing, onPingReceive } = useAppContext();
+  const { fileOpen, onFileOpenSucess, onFileOpenError } = useAppContext();
   const {
     ping: { count = 0 },
   } = useSnapshot(state);
@@ -66,15 +66,21 @@ export const Menu: FC = () => {
     reader.readAsText(file);
   }, []);
 
+  const handleNativeOpen = useCallback(() => {
+    fileOpen();
+    setAnchorEl(null);
+  }, []);
+
   const handlePing = useCallback(() => {
-    sendPing();
     setAnchorEl(null);
   }, []);
 
   useEffect(() => {
-    onPingReceive((data) => {
-      alert(data);
-      ++state.ping.count;
+    onFileOpenSucess((filePaths) => {
+      console.log(filePaths);
+    });
+    onFileOpenError((error) => {
+      console.error(error);
     });
   }, []);
 
@@ -115,6 +121,7 @@ export const Menu: FC = () => {
         <MenuItem component="label" htmlFor="open-file">
           Open
         </MenuItem>
+        <MenuItem onClick={handleNativeOpen}>Native open</MenuItem>
         <MenuItem onClick={handleClose}>Save as...</MenuItem>
         <MenuItem onClick={handlePing}>
           Ping for the {pingCalls}

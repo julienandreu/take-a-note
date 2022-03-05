@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron';
+import { ipcMain, IpcMain } from 'electron';
 import { hostname } from 'os';
 
 export const attachIpProcess = () => {
