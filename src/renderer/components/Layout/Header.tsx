@@ -8,7 +8,7 @@ interface HeaderProps {
   title?: string;
 }
 
-export const Header: FC<HeaderProps> = ({ title = 'New file 1' }) => (
+export const Header: FC<HeaderProps> = ({ title }) => (
   <>
     <AppBar position="fixed">
       <Toolbar>
