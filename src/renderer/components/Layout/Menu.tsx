@@ -1,4 +1,4 @@
-import React, { FC, MouseEvent, useCallback, useEffect, useMemo } from 'react';
+import React, { ChangeEvent, FC, MouseEvent, useCallback, useEffect, useMemo } from 'react';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuWrapper from '@mui/material/Menu';
@@ -38,6 +38,34 @@ export const Menu: FC = () => {
     setAnchorEl(null);
   }, []);
 
+  const handleNew = useCallback(() => {
+    state.file.content = '';
+    setAnchorEl(null);
+  }, []);
+
+  const handleOpenFile = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const filelist = event?.target?.files;
+    if (!filelist) {
+      setAnchorEl(null);
+      return;
+    }
+
+    const file = filelist[0];
+    if (!file) {
+      setAnchorEl(null);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      state.file.name = file.name;
+      state.file.path = file.path;
+      state.file.content = reader?.result?.toString() ?? '';
+      setAnchorEl(null);
+    };
+    reader.readAsText(file);
+  }, []);
+
   const handlePing = useCallback(() => {
     sendPing();
     setAnchorEl(null);
@@ -75,8 +103,18 @@ export const Menu: FC = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleClose}>New file</MenuItem>
-        <MenuItem onClick={handleClose}>Open</MenuItem>
+        <MenuItem onClick={handleNew}>New file</MenuItem>
+        <input
+          accept="text/*"
+          onChange={handleOpenFile}
+          style={{ display: 'none' }}
+          id="open-file"
+          type="file"
+          value={''}
+        />
+        <MenuItem component="label" htmlFor="open-file">
+          Open
+        </MenuItem>
         <MenuItem onClick={handleClose}>Save as...</MenuItem>
         <MenuItem onClick={handlePing}>
           Ping for the {pingCalls}
