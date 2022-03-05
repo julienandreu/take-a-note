@@ -10,10 +10,20 @@ import { state } from '../../store';
 export const Menu: FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
-  const { fileOpen, onFileOpenSucess, onFileOpenError, fileRead, onFileReadSucess, onFileReadError } = useAppContext();
   const {
-    file: { name, content },
-  } = useSnapshot(state);
+    fileOpen,
+    onFileOpenSucess,
+    onFileOpenError,
+    fileRead,
+    onFileReadSucess,
+    onFileReadError,
+    fileSave,
+    onFileSaveSucess,
+    onFileSaveError,
+    fileWrite,
+    onFileWriteSucess,
+    onFileWriteError,
+  } = useAppContext();
 
   const handleClick = useCallback((event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -37,6 +47,10 @@ export const Menu: FC = () => {
     setAnchorEl(null);
   }, []);
 
+  const handleSave = useCallback(() => {
+    fileSave();
+  }, []);
+
   useEffect(() => {
     onFileOpenSucess((filePaths) => {
       const filePath = filePaths.find(Boolean);
@@ -57,6 +71,26 @@ export const Menu: FC = () => {
       setAnchorEl(null);
     });
     onFileReadError((error) => {
+      console.error(error);
+      setAnchorEl(null);
+    });
+    onFileSaveSucess((filePath) => {
+      if (!filePath) {
+        setAnchorEl(null);
+        return;
+      }
+
+      fileWrite(filePath, state.file.content);
+    });
+    onFileSaveError((error) => {
+      console.error(error);
+      setAnchorEl(null);
+    });
+    onFileWriteSucess((filePath) => {
+      state.file.name = filePath ?? '';
+      setAnchorEl(null);
+    });
+    onFileWriteError((error) => {
       console.error(error);
       setAnchorEl(null);
     });
@@ -89,7 +123,7 @@ export const Menu: FC = () => {
       >
         <MenuItem onClick={handleNew}>New file</MenuItem>
         <MenuItem onClick={handleOpen}>Open</MenuItem>
-        <MenuItem onClick={handleClose}>Save as...</MenuItem>
+        <MenuItem onClick={handleSave}>Save as...</MenuItem>
       </MenuWrapper>
     </>
   );

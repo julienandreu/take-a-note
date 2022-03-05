@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { IpcMain, ipcMain, IpcMainEvent, dialog } from 'electron';
 
 interface IpcMainEventListenerEvent<T> extends Omit<IpcMainEvent, 'reply'> {
@@ -10,6 +10,8 @@ type IpcMainEventListener = (event: IpcMainEvent, ...args: any[]) => any;
 export interface MainEvents {
   'file.open': () => void;
   'file.read': (path: string) => void;
+  'file.save': () => void;
+  'file.write': (path: string, content: string) => void;
 }
 
 export interface RendererEvents {
@@ -17,6 +19,10 @@ export interface RendererEvents {
   'file.open.error': (error: Error) => void;
   'file.read.success': (content: string) => void;
   'file.read.error': (error: Error) => void;
+  'file.save.success': (filePath: string) => void;
+  'file.save.error': (error: Error) => void;
+  'file.write.success': (filePath: string) => void;
+  'file.write.error': (error: Error) => void;
 }
 
 interface MainRegistry<T> extends Omit<IpcMain, 'on' | 'send'> {
@@ -59,6 +65,30 @@ export const attachMainEvents = () => {
       event.reply('file.read.success', content.toString('utf8'));
     } catch (error) {
       event.reply('file.read.error', error instanceof Error ? error : new Error(`${error}`));
+    }
+  });
+  mainRegistry.on('file.save', (event) => {
+    try {
+      const filePath = dialog.showSaveDialogSync({});
+
+      console.log(filePath);
+
+      if (!filePath) {
+        throw new Error('No file selected ->' + JSON.stringify(filePath, null, 2));
+      }
+
+      event.reply('file.save.success', filePath);
+    } catch (error) {
+      event.reply('file.save.error', error instanceof Error ? error : new Error(`${error}`));
+    }
+  });
+  mainRegistry.on('file.write', (event, path, content) => {
+    try {
+      writeFileSync(path, content);
+
+      event.reply('file.write.success', path);
+    } catch (error) {
+      event.reply('file.write.error', error instanceof Error ? error : new Error(`${error}`));
     }
   });
 };

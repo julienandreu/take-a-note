@@ -1,14 +1,7 @@
 import { IpcRenderer, ipcRenderer, IpcRendererEvent } from 'electron';
-import { MainEvents } from 'src/main/main-registry';
+import { MainEvents, RendererEvents } from 'src/main/main-registry';
 
 type IpcMainEventListener = (event: IpcRendererEvent, ...args: any[]) => any;
-
-export interface RendererEvents extends MainEvents {
-  'file.open.success': (filePaths: string[]) => void;
-  'file.open.error': (error: Error) => void;
-  'file.read.success': (content: string) => void;
-  'file.read.error': (error: Error) => void;
-}
 
 interface MainRegistry<T> extends Omit<IpcRenderer, 'on' | 'send'> {
   on<C extends keyof T>(
@@ -23,7 +16,7 @@ interface MainRegistry<T> extends Omit<IpcRenderer, 'on' | 'send'> {
 
 const { on, send, ...cleanedIpcMain } = ipcRenderer;
 
-export const rendererRegistry: MainRegistry<RendererEvents> = {
+export const rendererRegistry: MainRegistry<MainEvents & RendererEvents> = {
   ...cleanedIpcMain,
   on: (channel, listener) => {
     ipcRenderer.on(channel, listener as IpcMainEventListener);
