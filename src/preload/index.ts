@@ -2,6 +2,7 @@ import { contextBridge } from 'electron';
 import { rendererRegistry } from './renderer-registry';
 
 export const appContext = {
+  platform: process.platform,
   fileOpen: (path?: string) => {
     rendererRegistry.send('file.open', path);
   },

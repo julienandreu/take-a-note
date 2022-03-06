@@ -93,8 +93,6 @@ export const attachMainEvents = () => {
         ],
       });
 
-      console.log(filePath);
-
       if (!filePath) {
         throw new Error('No file selected ->' + JSON.stringify(filePath, null, 2));
       }
