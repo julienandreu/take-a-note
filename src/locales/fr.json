@@ -1,0 +1,11 @@
+{
+    "menu": {
+        "new-file": "Nouveau fichier",
+        "open": "Ouvrir",
+        "save-as": "Enregistrer sous..."
+    },
+    "editor": {
+        "placeholder": "Entrez votre note ici...",
+        "new-file": "Nouveau fichier"
+    }
+}
