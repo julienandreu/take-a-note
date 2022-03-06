@@ -5,11 +5,19 @@ import MenuWrapper from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useAppContext } from '../hooks/use-app-context.hook';
 import { state } from '../store';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Typography from '@mui/material/Typography';
+import MenuList from '@mui/material/MenuList';
+import FolderOpen from '@mui/icons-material/FolderOpen';
+import SaveAs from '@mui/icons-material/SaveAs';
+import InsertDriveFile from '@mui/icons-material/InsertDriveFile';
 
 export const Menu: FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
   const {
+    platform,
     fileOpen,
     onFileOpenSucess,
     onFileOpenError,
@@ -22,7 +30,10 @@ export const Menu: FC = () => {
     fileWrite,
     onFileWriteSucess,
     onFileWriteError,
+    onShortcutTriggerred,
   } = useAppContext();
+
+  const commandOrControl = useMemo(() => (platform === 'darwin' ? '⌘' : 'CTRL'), [platform]);
 
   const handleClick = useCallback((event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -96,6 +107,9 @@ export const Menu: FC = () => {
       console.error(error);
       setAnchorEl(null);
     });
+    onShortcutTriggerred('CommandOrControl+N', handleNew);
+    onShortcutTriggerred('CommandOrControl+O', handleOpen);
+    onShortcutTriggerred('CommandOrControl+S', handleSave);
   }, []);
 
   return (
@@ -123,9 +137,40 @@ export const Menu: FC = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleNew}>New file</MenuItem>
-        <MenuItem onClick={handleOpen}>Open</MenuItem>
-        <MenuItem onClick={handleSave}>Save as...</MenuItem>
+        <MenuList
+          sx={{
+            width: '240px',
+            maxWidth: '100%',
+          }}
+        >
+          <MenuItem onClick={handleNew}>
+            <ListItemIcon>
+              <InsertDriveFile fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>New file</ListItemText>
+            <Typography variant="body2" color="text.secondary">
+              {commandOrControl}N
+            </Typography>
+          </MenuItem>
+          <MenuItem onClick={handleOpen}>
+            <ListItemIcon>
+              <FolderOpen fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Open</ListItemText>
+            <Typography variant="body2" color="text.secondary">
+              {commandOrControl}O
+            </Typography>
+          </MenuItem>
+          <MenuItem onClick={handleSave}>
+            <ListItemIcon>
+              <SaveAs fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Save as...</ListItemText>
+            <Typography variant="body2" color="text.secondary">
+              {commandOrControl}S
+            </Typography>
+          </MenuItem>
+        </MenuList>
       </MenuWrapper>
     </>
   );

@@ -23,6 +23,9 @@ export interface RendererEvents {
   'file.save.error': (error: Error) => void;
   'file.write.success': (filePath: string) => void;
   'file.write.error': (error: Error) => void;
+  'shortcut.triggerred.CommandOrControl+N': () => void;
+  'shortcut.triggerred.CommandOrControl+O': () => void;
+  'shortcut.triggerred.CommandOrControl+S': () => void;
 }
 
 interface MainRegistry<T> extends Omit<IpcMain, 'on' | 'send'> {
@@ -89,8 +92,6 @@ export const attachMainEvents = () => {
           { name: 'Markdown', extensions: ['md'] },
         ],
       });
-
-      console.log(filePath);
 
       if (!filePath) {
         throw new Error('No file selected ->' + JSON.stringify(filePath, null, 2));

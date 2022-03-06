@@ -1,5 +1,6 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { attachMainEvents } from './main-registry';
+import { register } from 'electron-localshortcut';
 
 declare var MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare var MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -25,6 +26,17 @@ const createWindow = () => {
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
+
+  // Register local shortcuts
+  register('CommandOrControl+N', () => {
+    mainWindow.webContents.send('shortcut.triggerred.CommandOrControl+N');
+  });
+  register('CommandOrControl+O', () => {
+    mainWindow.webContents.send('shortcut.triggerred.CommandOrControl+O');
+  });
+  register('CommandOrControl+S', () => {
+    mainWindow.webContents.send('shortcut.triggerred.CommandOrControl+S');
+  });
 };
 
 // This method will be called when Electron has finished
