@@ -35,6 +35,7 @@ export const Menu: FC = () => {
 
   const handleNew = useCallback(() => {
     state.file.name = `New file ${++state.file.count}`;
+    state.file.path = '';
     state.file.content = '';
     setAnchorEl(null);
   }, []);
@@ -59,7 +60,8 @@ export const Menu: FC = () => {
         return;
       }
 
-      state.file.name = filePath;
+      state.file.name = filePath.replace(/^.*[\\\/]/, '');
+      state.file.path = filePath;
       fileRead(filePath);
     });
     onFileOpenError((error) => {
@@ -87,7 +89,8 @@ export const Menu: FC = () => {
       setAnchorEl(null);
     });
     onFileWriteSucess((filePath) => {
-      state.file.name = filePath ?? '';
+      state.file.name = filePath.replace(/^.*[\\\/]/, '') ?? '';
+      state.file.path = filePath ?? '';
       setAnchorEl(null);
     });
     onFileWriteError((error) => {

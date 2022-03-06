@@ -6,12 +6,9 @@ import { Editor } from './Editor';
 import { Header } from './Header';
 
 const App = () => {
-  const {
-    file: { name = '', content = '' },
-  } = useSnapshot(state);
   return (
     <>
-      <Header title={name} />
+      <Header />
       <Body>
         <Editor />
       </Body>
