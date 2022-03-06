@@ -1,0 +1,16 @@
+{
+    "languages": {
+        "any": "English",
+        "en": "English",
+        "fr": "Français"
+    },
+    "menu": {
+        "new-file": "New file",
+        "open": "Open",
+        "save-as": "Save as..."
+    },
+    "editor": {
+        "placeholder": "Enter your note here...",
+        "new-file": "New file"
+    }
+}

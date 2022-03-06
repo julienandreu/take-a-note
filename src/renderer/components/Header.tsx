@@ -1,16 +1,13 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Menu } from './Menu';
 import { useSnapshot } from 'valtio';
 import { state } from '../store';
+import { Language } from './Language';
 
-interface HeaderProps {
-  title?: string;
-}
-
-export const Header: FC<HeaderProps> = ({ title }) => {
+export const Header: FC = () => {
   const {
     file: { name = '', path = '' },
   } = useSnapshot(state);
@@ -31,6 +28,7 @@ export const Header: FC<HeaderProps> = ({ title }) => {
               {path}
             </Typography>
           )}
+          <Language />
         </Toolbar>
       </AppBar>
       <Toolbar />

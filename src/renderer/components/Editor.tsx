@@ -4,12 +4,14 @@ import { subscribe, useSnapshot } from 'valtio';
 import { useDebounceCallback } from '@react-hook/debounce';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import Box from '@mui/material/Box';
+import { useTranslation } from 'react-i18next';
 
 export const Editor = () => {
   const {
     file: { content = '' },
   } = useSnapshot(state);
   const [value, setValue] = React.useState<string>(content);
+  const { t } = useTranslation();
 
   const updateState = useDebounceCallback(
     (value: string) => {
@@ -46,7 +48,7 @@ export const Editor = () => {
     >
       <TextareaAutosize
         id="file-content"
-        placeholder="Enter your note here..."
+        placeholder={t('editor:placeholder')}
         onChange={handleChange}
         style={{
           flexGrow: 1,

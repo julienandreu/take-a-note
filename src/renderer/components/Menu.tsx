@@ -12,10 +12,13 @@ import MenuList from '@mui/material/MenuList';
 import FolderOpen from '@mui/icons-material/FolderOpen';
 import SaveAs from '@mui/icons-material/SaveAs';
 import InsertDriveFile from '@mui/icons-material/InsertDriveFile';
+import { useTranslation } from 'react-i18next';
 
 export const Menu: FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
+  const { t } = useTranslation();
+
   const {
     platform,
     fileOpen,
@@ -44,7 +47,7 @@ export const Menu: FC = () => {
   }, []);
 
   const handleNew = useCallback(() => {
-    state.file.name = `New file ${++state.file.count}`;
+    state.file.name = `${t('editor:new-file')} ${++state.file.count}`;
     state.file.path = '';
     state.file.content = '';
     setAnchorEl(null);
@@ -147,7 +150,7 @@ export const Menu: FC = () => {
             <ListItemIcon>
               <InsertDriveFile fontSize="small" />
             </ListItemIcon>
-            <ListItemText>New file</ListItemText>
+            <ListItemText>{t('menu:new-file')}</ListItemText>
             <Typography variant="body2" color="text.secondary">
               {commandOrControl}N
             </Typography>
@@ -156,7 +159,7 @@ export const Menu: FC = () => {
             <ListItemIcon>
               <FolderOpen fontSize="small" />
             </ListItemIcon>
-            <ListItemText>Open</ListItemText>
+            <ListItemText>{t('menu:open')}</ListItemText>
             <Typography variant="body2" color="text.secondary">
               {commandOrControl}O
             </Typography>
@@ -165,7 +168,7 @@ export const Menu: FC = () => {
             <ListItemIcon>
               <SaveAs fontSize="small" />
             </ListItemIcon>
-            <ListItemText>Save as...</ListItemText>
+            <ListItemText>{t('menu:save-as')}</ListItemText>
             <Typography variant="body2" color="text.secondary">
               {commandOrControl}S
             </Typography>
