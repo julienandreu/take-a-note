@@ -2,8 +2,8 @@ import { contextBridge } from 'electron';
 import { rendererRegistry } from './renderer-registry';
 
 export const appContext = {
-  fileOpen: () => {
-    rendererRegistry.send('file.open');
+  fileOpen: (path?: string) => {
+    rendererRegistry.send('file.open', path);
   },
   onFileOpenSucess: (callback: (filePaths: string[]) => void) =>
     rendererRegistry.on('file.open.success', (event, filePaths) => callback(filePaths)),
@@ -16,8 +16,8 @@ export const appContext = {
     rendererRegistry.on('file.read.success', (event, content) => callback(content)),
   onFileReadError: (callback: (error: Error) => void) =>
     rendererRegistry.on('file.read.error', (event, error) => callback(error)),
-  fileSave: () => {
-    rendererRegistry.send('file.save');
+  fileSave: (path?: string) => {
+    rendererRegistry.send('file.save', path);
   },
   onFileSaveSucess: (callback: (filePath: string) => void) =>
     rendererRegistry.on('file.save.success', (event, filePath) => callback(filePath)),

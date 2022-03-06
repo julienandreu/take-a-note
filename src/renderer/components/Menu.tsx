@@ -4,7 +4,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MenuWrapper from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useAppContext } from '../hooks/use-app-context.hook';
-import { useSnapshot } from 'valtio';
 import { state } from '../store';
 
 export const Menu: FC = () => {
@@ -41,7 +40,7 @@ export const Menu: FC = () => {
   }, []);
 
   const handleOpen = useCallback(() => {
-    fileOpen();
+    fileOpen(state.file.path);
   }, []);
 
   const handlePing = useCallback(() => {
@@ -49,7 +48,7 @@ export const Menu: FC = () => {
   }, []);
 
   const handleSave = useCallback(() => {
-    fileSave();
+    fileSave(state.file.path);
   }, []);
 
   useEffect(() => {
