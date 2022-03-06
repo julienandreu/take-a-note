@@ -2,6 +2,7 @@ import React from 'react';
 import { useSnapshot } from 'valtio';
 import { state } from '../store';
 import { Body } from './Layout/Body';
+import { Editor } from './Layout/Editor';
 import { Header } from './Layout/Header';
 
 const App = () => {
@@ -11,7 +12,9 @@ const App = () => {
   return (
     <>
       <Header title={name} />
-      <Body>{content}</Body>
+      <Body>
+        <Editor />
+      </Body>
     </>
   );
 };
