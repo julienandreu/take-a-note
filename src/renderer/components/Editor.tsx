@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { state } from '../../../renderer/store';
+import { state } from '../../renderer/store';
 import { subscribe, useSnapshot } from 'valtio';
 import { useDebounceCallback } from '@react-hook/debounce';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
@@ -39,7 +39,9 @@ export const Editor = () => {
     <Box
       sx={{
         flexGrow: 1,
+        flexDirection: 'column',
         flexWrap: 'nowrap',
+        display: 'flex',
       }}
     >
       <TextareaAutosize
@@ -47,6 +49,7 @@ export const Editor = () => {
         placeholder="Enter your note here..."
         onChange={handleChange}
         style={{
+          flexGrow: 1,
           padding: '16.5px 14px',
           fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
           fontSize: '1rem',
@@ -55,7 +58,6 @@ export const Editor = () => {
           color: 'rgba(0, 0, 0, 0.87)',
           borderRadius: '4px',
           width: '100%',
-          height: '100%',
         }}
         value={value}
       />

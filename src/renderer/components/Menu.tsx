@@ -3,9 +3,8 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuWrapper from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useAppContext } from '../../hooks/use-app-context.hook';
-import { useSnapshot } from 'valtio';
-import { state } from '../../store';
+import { useAppContext } from '../hooks/use-app-context.hook';
+import { state } from '../store';
 
 export const Menu: FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -35,12 +34,13 @@ export const Menu: FC = () => {
 
   const handleNew = useCallback(() => {
     state.file.name = `New file ${++state.file.count}`;
+    state.file.path = '';
     state.file.content = '';
     setAnchorEl(null);
   }, []);
 
   const handleOpen = useCallback(() => {
-    fileOpen();
+    fileOpen(state.file.path);
   }, []);
 
   const handlePing = useCallback(() => {
@@ -48,7 +48,7 @@ export const Menu: FC = () => {
   }, []);
 
   const handleSave = useCallback(() => {
-    fileSave();
+    fileSave(state.file.path);
   }, []);
 
   useEffect(() => {
@@ -59,7 +59,8 @@ export const Menu: FC = () => {
         return;
       }
 
-      state.file.name = filePath;
+      state.file.name = filePath.replace(/^.*[\\\/]/, '');
+      state.file.path = filePath;
       fileRead(filePath);
     });
     onFileOpenError((error) => {
@@ -87,7 +88,8 @@ export const Menu: FC = () => {
       setAnchorEl(null);
     });
     onFileWriteSucess((filePath) => {
-      state.file.name = filePath ?? '';
+      state.file.name = filePath.replace(/^.*[\\\/]/, '') ?? '';
+      state.file.path = filePath ?? '';
       setAnchorEl(null);
     });
     onFileWriteError((error) => {

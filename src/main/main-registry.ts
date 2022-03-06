@@ -8,9 +8,9 @@ interface IpcMainEventListenerEvent<T> extends Omit<IpcMainEvent, 'reply'> {
 type IpcMainEventListener = (event: IpcMainEvent, ...args: any[]) => any;
 
 export interface MainEvents {
-  'file.open': () => void;
+  'file.open': (path?: string) => void;
   'file.read': (path: string) => void;
-  'file.save': () => void;
+  'file.save': (path?: string) => void;
   'file.write': (path: string, content: string) => void;
 }
 
@@ -45,9 +45,19 @@ export const mainRegistry: MainRegistry<MainEvents & RendererEvents> = {
 };
 
 export const attachMainEvents = () => {
-  mainRegistry.on('file.open', (event) => {
+  mainRegistry.on('file.open', (event, path) => {
     try {
-      const filePaths = dialog.showOpenDialogSync({});
+      const filePaths = dialog.showOpenDialogSync({
+        title: 'Open a file',
+        defaultPath: path,
+        buttonLabel: 'Open',
+        properties: ['openFile'],
+        filters: [
+          { name: 'All note files', extensions: ['txt', 'md'] },
+          { name: 'Text', extensions: ['txt'] },
+          { name: 'Markdown', extensions: ['md'] },
+        ],
+      });
 
       if (!Array.isArray(filePaths)) {
         throw new Error('No file selected');
@@ -67,9 +77,18 @@ export const attachMainEvents = () => {
       event.reply('file.read.error', error instanceof Error ? error : new Error(`${error}`));
     }
   });
-  mainRegistry.on('file.save', (event) => {
+  mainRegistry.on('file.save', (event, path) => {
     try {
-      const filePath = dialog.showSaveDialogSync({});
+      const filePath = dialog.showSaveDialogSync({
+        title: 'Save file',
+        defaultPath: path,
+        buttonLabel: 'Save',
+        filters: [
+          { name: 'All note files', extensions: ['txt', 'md'] },
+          { name: 'Text', extensions: ['txt'] },
+          { name: 'Markdown', extensions: ['md'] },
+        ],
+      });
 
       console.log(filePath);
 
