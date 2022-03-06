@@ -10,25 +10,20 @@ import { state } from '../../store';
 export const Menu: FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
-  const { sendPing, onPingReceive } = useAppContext();
   const {
-    ping: { count = 0 },
-  } = useSnapshot(state);
-
-  const pingCalls = useMemo(() => count + 1, [count]);
-
-  const getOrdinalSuffix = useCallback((number: number) => {
-    switch (number.toString().substring(-1, 1)) {
-      case '1':
-        return number === 11 ? 'th' : 'st';
-      case '2':
-        return number === 12 ? 'th' : 'nd';
-      case '3':
-        return number === 13 ? 'th' : 'rd';
-      default:
-        return 'th';
-    }
-  }, []);
+    fileOpen,
+    onFileOpenSucess,
+    onFileOpenError,
+    fileRead,
+    onFileReadSucess,
+    onFileReadError,
+    fileSave,
+    onFileSaveSucess,
+    onFileSaveError,
+    fileWrite,
+    onFileWriteSucess,
+    onFileWriteError,
+  } = useAppContext();
 
   const handleClick = useCallback((event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -38,15 +33,66 @@ export const Menu: FC = () => {
     setAnchorEl(null);
   }, []);
 
-  const handlePing = useCallback(() => {
-    sendPing();
+  const handleNew = useCallback(() => {
+    state.file.name = `New file ${++state.file.count}`;
+    state.file.content = '';
     setAnchorEl(null);
   }, []);
 
+  const handleOpen = useCallback(() => {
+    fileOpen();
+  }, []);
+
+  const handlePing = useCallback(() => {
+    setAnchorEl(null);
+  }, []);
+
+  const handleSave = useCallback(() => {
+    fileSave();
+  }, []);
+
   useEffect(() => {
-    onPingReceive((data) => {
-      alert(data);
-      ++state.ping.count;
+    onFileOpenSucess((filePaths) => {
+      const filePath = filePaths.find(Boolean);
+      if (!filePath) {
+        setAnchorEl(null);
+        return;
+      }
+
+      state.file.name = filePath;
+      fileRead(filePath);
+    });
+    onFileOpenError((error) => {
+      console.error(error);
+      setAnchorEl(null);
+    });
+    onFileReadSucess((content) => {
+      state.file.content = content ?? '';
+      setAnchorEl(null);
+    });
+    onFileReadError((error) => {
+      console.error(error);
+      setAnchorEl(null);
+    });
+    onFileSaveSucess((filePath) => {
+      if (!filePath) {
+        setAnchorEl(null);
+        return;
+      }
+
+      fileWrite(filePath, state.file.content);
+    });
+    onFileSaveError((error) => {
+      console.error(error);
+      setAnchorEl(null);
+    });
+    onFileWriteSucess((filePath) => {
+      state.file.name = filePath ?? '';
+      setAnchorEl(null);
+    });
+    onFileWriteError((error) => {
+      console.error(error);
+      setAnchorEl(null);
     });
   }, []);
 
@@ -75,13 +121,9 @@ export const Menu: FC = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleClose}>New file</MenuItem>
-        <MenuItem onClick={handleClose}>Open</MenuItem>
-        <MenuItem onClick={handleClose}>Save as...</MenuItem>
-        <MenuItem onClick={handlePing}>
-          Ping for the {pingCalls}
-          {getOrdinalSuffix(pingCalls)} time
-        </MenuItem>
+        <MenuItem onClick={handleNew}>New file</MenuItem>
+        <MenuItem onClick={handleOpen}>Open</MenuItem>
+        <MenuItem onClick={handleSave}>Save as...</MenuItem>
       </MenuWrapper>
     </>
   );

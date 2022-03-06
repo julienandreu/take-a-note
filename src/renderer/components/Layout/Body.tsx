@@ -6,7 +6,8 @@ export const Body: FC = ({ children }) => (
     sx={{
       backgroundColor: (theme) => theme.palette.grey[100],
       flexGrow: 1,
-      p: 4,
+      p: 2,
+      display: 'flex',
     }}
   >
     {children}
