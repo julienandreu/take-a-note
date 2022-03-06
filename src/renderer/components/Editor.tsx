@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { state } from '../../../renderer/store';
+import { state } from '../../renderer/store';
 import { subscribe, useSnapshot } from 'valtio';
 import { useDebounceCallback } from '@react-hook/debounce';
 import TextareaAutosize from '@mui/material/TextareaAutosize';

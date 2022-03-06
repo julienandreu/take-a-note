@@ -3,9 +3,9 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuWrapper from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useAppContext } from '../../hooks/use-app-context.hook';
+import { useAppContext } from '../hooks/use-app-context.hook';
 import { useSnapshot } from 'valtio';
-import { state } from '../../store';
+import { state } from '../store';
 
 export const Menu: FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
