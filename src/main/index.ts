@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron';
 import { attachMainEvents } from './main-registry';
 
 declare var MAIN_WINDOW_WEBPACK_ENTRY: string;
@@ -25,6 +25,17 @@ const createWindow = () => {
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
+
+  // Register shortcuts
+  globalShortcut.register('CommandOrControl+N', () => {
+    mainWindow.webContents.send('shortcut.triggerred.CommandOrControl+N');
+  });
+  globalShortcut.register('CommandOrControl+O', () => {
+    mainWindow.webContents.send('shortcut.triggerred.CommandOrControl+O');
+  });
+  globalShortcut.register('CommandOrControl+S', () => {
+    mainWindow.webContents.send('shortcut.triggerred.CommandOrControl+S');
+  });
 };
 
 // This method will be called when Electron has finished

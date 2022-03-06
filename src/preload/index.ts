@@ -30,6 +30,10 @@ export const appContext = {
     rendererRegistry.on('file.write.success', (event, filePath) => callback(filePath)),
   onFileWriteError: (callback: (error: Error) => void) =>
     rendererRegistry.on('file.write.error', (event, error) => callback(error)),
+  onShortcutTriggerred: (
+    shortcut: 'CommandOrControl+N' | 'CommandOrControl+O' | 'CommandOrControl+S',
+    callback: () => void,
+  ) => rendererRegistry.on(`shortcut.triggerred.${shortcut}`, (event) => callback()),
 };
 
 contextBridge.exposeInMainWorld('appContext', appContext);

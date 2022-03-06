@@ -22,6 +22,7 @@ export const Menu: FC = () => {
     fileWrite,
     onFileWriteSucess,
     onFileWriteError,
+    onShortcutTriggerred,
   } = useAppContext();
 
   const handleClick = useCallback((event: MouseEvent<HTMLElement>) => {
@@ -96,6 +97,9 @@ export const Menu: FC = () => {
       console.error(error);
       setAnchorEl(null);
     });
+    onShortcutTriggerred('CommandOrControl+N', handleNew);
+    onShortcutTriggerred('CommandOrControl+O', handleOpen);
+    onShortcutTriggerred('CommandOrControl+S', handleSave);
   }, []);
 
   return (
