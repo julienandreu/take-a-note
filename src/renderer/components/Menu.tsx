@@ -57,11 +57,13 @@ export const Menu: FC = () => {
     fileOpen(state.file.path);
   }, []);
 
-  const handlePing = useCallback(() => {
-    setAnchorEl(null);
-  }, []);
-
   const handleSave = useCallback(() => {
+    if (!state.file.path) {
+      alert('You could not save an empty file');
+      setAnchorEl(null);
+      return;
+    }
+
     fileSave(state.file.path);
   }, []);
 
